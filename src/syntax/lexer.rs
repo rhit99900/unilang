@@ -1,24 +1,39 @@
 #[derive(Debug,PartialEq,Clone)]
 pub enum TokenType {
   Number(i64),
-  // Plus,
-  // Minus,
-  // Asterisk,
-  // Slash,
-  // LeftParen,
-  // RightParen,
+  Plus,
+  Minus,
+  Asterisk,
+  ForwardSlash,
+  BackSlash,
+  LeftParenthesis,
+  RightParenthesis,
   Eof,
-  BadChar
-  
+  BadChar,
+  WhiteSpace
   // Add more token types to assess in the parser
 }
 
+// Interfaces Start Here
 #[derive(Debug,PartialEq,Clone)]
 pub struct TextSpan {
-  start: usize,
-  end: usize,
-  literal: String
+  pub(crate) start: usize,
+  pub(crate) end: usize,
+  pub(crate) literal: String
 }
+
+#[derive(Debug,PartialEq,Clone)]
+pub struct Token {
+  pub(crate) kind: TokenType,
+  pub(super) span: TextSpan
+}
+
+pub struct Lexer<'a> {
+  input: &'a str,
+  current_position: usize
+}
+
+// Interfaces End Here
 
 impl TextSpan {
   pub fn new(start: usize, end: usize, literal: String) -> Self {
@@ -30,21 +45,10 @@ impl TextSpan {
   }
 }
 
-#[derive(Debug,PartialEq,Clone)]
-pub struct Token {
-  kind: TokenType,
-  span: TextSpan
-}
-
 impl Token {
   pub fn new(kind: TokenType, span: TextSpan) -> Self {
     Self { kind, span }
   }
-}
-
-pub struct Lexer<'a> {
-  input: &'a str,
-  current_position: usize
 }
 
 impl <'a> Lexer<'a> {
@@ -53,9 +57,7 @@ impl <'a> Lexer<'a> {
   }
 
   pub fn next_token(&mut self) -> Option<Token> {
-    if self.current_position > self.input.len() {
-      return None;
-    }
+    // Check if the current character is the end of file
     if self.current_position == self.input.len() {
       let _eof: char = '\0';
       self.current_position += 1;
@@ -67,26 +69,50 @@ impl <'a> Lexer<'a> {
 
     let c = self.current_character();
     return c.map(|c| {
-      let _start = self.current_position;
-        let mut kind = TokenType::BadChar;
+      let start = self.current_position;
+      let mut kind = TokenType::BadChar;
+      
       if Self::is_number_start(&c) {
         let number: i64 = self.consume_number();
         kind = TokenType::Number(number);
       }
-      else {
+      else if Self::is_whitespace(&c){
         self.consume_character();
+        kind = TokenType::WhiteSpace
+      }
+      else {
+        self.consume_punctuation();
       }
 
-      let _end = self.current_position;
-      let _literal = self.input[_start.._end].to_string();
-      let span = TextSpan::new(_start, _end, _literal);
+      let end = self.current_position;      
+      println!("Start: {:?} End: {:?}", start, end);
+      let literal = &self.input[start..end];
+      let span = TextSpan::new(start, end, literal.to_string());
       return Token::new(kind, span);
     })
     
   }
 
   fn is_number_start(c: &char) -> bool {
-    c.is_digit(10)
+    return c.is_digit(10)
+  }
+
+  fn is_whitespace(c: &char) -> bool {
+    return c.is_whitespace()
+  }
+
+  fn consume_punctuation(&mut self) -> TokenType {
+    let c = self.consume_character().unwrap(); 
+    return match c {
+        '+' => TokenType::Plus,
+        '-' => TokenType::Minus,
+        '*' => TokenType::Asterisk,
+        '/' => TokenType::ForwardSlash,
+        '\\' => TokenType::BackSlash,
+        '(' => TokenType::LeftParenthesis,
+        ')' => TokenType::RightParenthesis,
+        _ => TokenType::BadChar
+    }
   }
 
   fn current_character(&self) -> Option<char> {
@@ -94,7 +120,7 @@ impl <'a> Lexer<'a> {
   }
 
   fn consume_character(&mut self) -> Option<char> {
-    if self.current_position > self.input.len() {
+    if self.current_position >= self.input.len() {
        return None;
     }
     let c = self.current_character();
@@ -112,6 +138,6 @@ impl <'a> Lexer<'a> {
         break;
       }
     }
-    number
+    return number
   }
 }
