@@ -136,6 +136,7 @@ impl <'a> Lexer<'a> {
     while let Some(c) = self.consume_character() {
       println!("{:?} Is Digit: {}", c, c.is_digit(10));
       if c.is_digit(10) {
+        // TODO: This needs Fixing!!
         self.consume_character().unwrap();
         number = number * 10 + c.to_digit(10).unwrap() as i64
       }
