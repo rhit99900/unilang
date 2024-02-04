@@ -190,7 +190,7 @@ impl SyntaxTreeVisitor for SyntaxTreePrinter {
   }
 
   fn visit_binary_expression(&mut self, binary_expression: &BinaryExpression) {
-    self.print_with_indent("Binary Expression");
+    self.print_with_indent("Binary Expression:");
     self.indent += INDENT_LEVEL;
     self.print_with_indent(&format!("Operator: {:?}", binary_expression.operator.kind));
     self.visit_expression(&binary_expression.left);

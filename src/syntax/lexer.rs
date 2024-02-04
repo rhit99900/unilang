@@ -1,6 +1,6 @@
 // Lexical Analyser for Unilang
 
-#[derive(Debug,PartialEq,Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
   Number(i64),
   Plus,
@@ -10,21 +10,21 @@ pub enum TokenType {
   BackSlash,
   LeftParenthesis,
   RightParenthesis,
-  Eof,
   BadChar,
-  WhiteSpace
+  WhiteSpace,
+  Eof
   // Add more token types to assess in the parser
 }
 
 // Interfaces Start Here
-#[derive(Debug,PartialEq,Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct TextSpan {
   pub(crate) start: usize,
   pub(crate) end: usize,
   pub(crate) literal: String
 }
 
-#[derive(Debug,PartialEq,Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Token {
   pub(crate) kind: TokenType,
   pub(super) span: TextSpan
@@ -54,6 +54,7 @@ impl Token {
 }
 
 impl <'a> Lexer<'a> {
+
   pub fn new(input: &'a str) -> Self {
     Self { input, current_position: 0 }
   }
@@ -70,6 +71,7 @@ impl <'a> Lexer<'a> {
     }
 
     let c = self.current_character();
+    println!("Current Character: {:?}, Position: {:?}", c.unwrap(), self.current_position);
     return c.map(|c| {
       let start = self.current_position;
       let mut kind = TokenType::BadChar;
@@ -105,15 +107,15 @@ impl <'a> Lexer<'a> {
   fn consume_punctuation(&mut self) -> TokenType {
     let c = self.consume_character().unwrap(); 
     return match c {
-        '+' => TokenType::Plus,
-        '-' => TokenType::Minus,
-        '*' => TokenType::Asterisk,
-        '/' => TokenType::ForwardSlash,
-        '\\' => TokenType::BackSlash,
-        '(' => TokenType::LeftParenthesis,
-        ')' => TokenType::RightParenthesis,
-        _ => TokenType::BadChar
-    }
+      '+' => TokenType::Plus,
+      '-' => TokenType::Minus,
+      '*' => TokenType::Asterisk,
+      '/' => TokenType::ForwardSlash,
+      '(' => TokenType::LeftParenthesis,
+      ')' => TokenType::RightParenthesis,
+      '\\' => TokenType::BackSlash,
+      _ => TokenType::BadChar
+    };
   }
 
   fn current_character(&self) -> Option<char> {
@@ -132,13 +134,15 @@ impl <'a> Lexer<'a> {
   fn consume_number(&mut self) -> i64 {
     let mut number: i64 = 0;
     while let Some(c) = self.consume_character() {
+      println!("{:?} Is Digit: {}", c, c.is_digit(10));
       if c.is_digit(10) {
+        self.consume_character().unwrap();
         number = number * 10 + c.to_digit(10).unwrap() as i64
       }
       else { 
         break;
       }
     }
-    return number
+    return number;
   }
 }
