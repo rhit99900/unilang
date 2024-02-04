@@ -1,3 +1,5 @@
+// Lexical Analyser for Unilang
+
 #[derive(Debug,PartialEq,Clone)]
 pub enum TokenType {
   Number(i64),
@@ -84,8 +86,7 @@ impl <'a> Lexer<'a> {
         self.consume_punctuation();
       }
 
-      let end = self.current_position;      
-      println!("Start: {:?} End: {:?}", start, end);
+      let end = self.current_position;
       let literal = &self.input[start..end];
       let span = TextSpan::new(start, end, literal.to_string());
       return Token::new(kind, span);
