@@ -2,6 +2,7 @@ use self::lexer::Token;
 
 pub mod lexer;
 pub mod parser;
+pub mod evaluator;
 
 const INDENT_LEVEL:usize = 2;
 // Abstract Syntax Tree Module

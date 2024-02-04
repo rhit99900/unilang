@@ -1,6 +1,7 @@
 use crate::syntax::SyntaxTree;
 use crate::syntax::lexer::Lexer;
 use crate::syntax::parser::Parser;
+use crate::syntax::evaluator::Evaluator;
 
 mod syntax;
 
@@ -25,5 +26,7 @@ fn main() {
     }
     
     syntax_tree.visualise();
-    
+    let mut evaluate = Evaluator::new();
+    syntax_tree.visit(&mut evaluate);
+    println!("Result: {:?}", evaluate.last_value);
 }
