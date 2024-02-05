@@ -4,17 +4,21 @@ use crate::syntax::parser::Parser;
 use crate::syntax::evaluator::Evaluator;
 
 mod syntax;
+mod diagnostics;
 
 fn main() {
-    let input = "(7 + 8) * 9";
-    let mut lexer = Lexer::new(input);
+    let input = "(1+1) * 7 + (8 * 9)";
+    let mut lexer = Lexer::new(input); 
     let mut tokens = Vec::new();
     while let Some(token) = lexer.next_token(){
         tokens.push(token);
     }
 
     // Printing Tokens tokenised by Lexer;
-    println!("{:?}", tokens);
+    // Debug Logs
+    for token in &tokens {
+        println!("{:?}", token);
+    }
 
     // Parsing Tokens
     let mut syntax_tree: SyntaxTree = SyntaxTree::new();

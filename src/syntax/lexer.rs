@@ -1,5 +1,7 @@
 // Lexical Analyser for Unilang
 
+use std::fmt::{Display, Formatter, write};
+
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
   Number(i64),
@@ -9,11 +11,29 @@ pub enum TokenType {
   ForwardSlash,
   BackSlash,
   LeftParenthesis,
-  RightParenthesis,
+  RightParenthesis,  
   BadChar,
   WhiteSpace,
   Eof
   // Add more token types to assess in the parser
+}
+
+impl Display for TokenType {
+  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    match self {
+      TokenType::Number(_) => write!(f, "Number"),
+      TokenType::Plus => write!(f, "+"),
+      TokenType::Minus => write!(f, "-"),
+      TokenType::Asterisk => write!(f, "*"),
+      TokenType::ForwardSlash => write!(f, "/"),
+      TokenType::BackSlash => write!(f, "\\"),
+      TokenType::LeftParenthesis => write!(f, "("),
+      TokenType::RightParenthesis => write!(f, ")"),
+      TokenType::BadChar => write!(f, "Bad"),
+      TokenType::WhiteSpace => write!(f, "Whitespace"),
+      TokenType::Eof => write!(f, "EOF")
+    }
+  }
 }
 
 // Interfaces Start Here
@@ -27,7 +47,7 @@ pub struct TextSpan {
 #[derive(Debug, PartialEq, Clone)]
 pub struct Token {
   pub(crate) kind: TokenType,
-  pub(super) span: TextSpan
+  pub(crate) span: TextSpan
 }
 
 pub struct Lexer<'a> {
@@ -39,17 +59,17 @@ pub struct Lexer<'a> {
 
 impl TextSpan {
   pub fn new(start: usize, end: usize, literal: String) -> Self {
-    Self { start, end, literal}
+    return Self { start, end, literal };
   }
 
   pub fn length(&self) -> usize {
-    self.end - self.start
+    return self.end - self.start;
   }
 }
 
 impl Token {
   pub fn new(kind: TokenType, span: TextSpan) -> Self {
-    Self { kind, span }
+    return Self { kind, span };
   }
 }
 
@@ -70,18 +90,20 @@ impl <'a> Lexer<'a> {
       ));
     }
 
-    let c = self.current_character();
-    println!("Current Character: {:?}, Position: {:?}", c.unwrap(), self.current_position);
+    let c = self.current();
     return c.map(|c| {
       let start = self.current_position;
+      // println!("Start: {}", start);
       let mut kind = TokenType::BadChar;
       
       if Self::is_number_start(&c) {
+        // println!("Consuming Number: {}", c);
         let number: i64 = self.consume_number();
         kind = TokenType::Number(number);
       }
       else if Self::is_whitespace(&c){
-        self.consume_character();
+        // println!("Consuming Whitespace");
+        self.consume();
         kind = TokenType::WhiteSpace
       }
       else {
@@ -89,8 +111,10 @@ impl <'a> Lexer<'a> {
       }
 
       let end = self.current_position;
-      let literal = &self.input[start..end];
-      let span = TextSpan::new(start, end, literal.to_string());
+      // Debug Logs
+      // println!("End: {}", end);      
+      let literal = self.input[start..end].to_string();
+      let span = TextSpan::new(start, end, literal);
       return Token::new(kind, span);
     })
     
@@ -105,8 +129,11 @@ impl <'a> Lexer<'a> {
   }
 
   fn consume_punctuation(&mut self) -> TokenType {
-    let c = self.consume_character().unwrap(); 
-    return match c {
+    let c = self.consume().unwrap(); 
+    // Debug Logs     
+    println!("Consuming Punctuation: {:?}", c);
+    
+    match c {
       '+' => TokenType::Plus,
       '-' => TokenType::Minus,
       '*' => TokenType::Asterisk,
@@ -115,30 +142,28 @@ impl <'a> Lexer<'a> {
       ')' => TokenType::RightParenthesis,
       '\\' => TokenType::BackSlash,
       _ => TokenType::BadChar
-    };
+    }
   }
 
-  fn current_character(&self) -> Option<char> {
+  fn current(&self) -> Option<char> {
     return self.input.chars().nth(self.current_position);
   }
 
-  fn consume_character(&mut self) -> Option<char> {
+  fn consume(&mut self) -> Option<char> {
     if self.current_position >= self.input.len() {
        return None;
     }
-    let c = self.current_character();
+    let c = self.current();
     self.current_position += 1;    
     return c;
   }
 
   fn consume_number(&mut self) -> i64 {
     let mut number: i64 = 0;
-    while let Some(c) = self.consume_character() {
-      println!("{:?} Is Digit: {}", c, c.is_digit(10));
+    while let Some(c) = self.current() {
       if c.is_digit(10) {
-        // TODO: This needs Fixing!!
-        self.consume_character().unwrap();
-        number = number * 10 + c.to_digit(10).unwrap() as i64
+        self.consume().unwrap();
+        number = number * 10 + c.to_digit(10).unwrap() as i64;
       }
       else { 
         break;
