@@ -1,18 +1,24 @@
+use crate::diagnostics::{DiagnosticGlossary, DiagnosticGlossaryCell};
 use crate::syntax::{BinaryOperator, BinaryOperatorKind, SyntaxTreeExpression, SyntaxTreeStatement};
-use crate::syntax::lexer::{Lexer, Token, TokenType};
+use crate::syntax::lexer::{Token, TokenType};
 
 pub struct Parser {
   tokens: Vec<Token>,
-  current: usize
+  current: usize,
+  // diagnostics_glossary: DiagnosticGlossaryCell
 }
 
 impl Parser {
-  pub fn new(tokens: Vec<Token>) -> Self {
+  pub fn new(
+    tokens: Vec<Token>, 
+    // diagnostics_glossary: DiagnosticGlossaryCell
+  ) -> Self {
     Self {
       tokens: tokens.iter().filter(
         |token| token.kind != TokenType::WhiteSpace
       ).map(|token| token.clone()).collect(),
-      current: 0    
+      current: 0,
+      // diagnostics_glossary
     }
   }
 
@@ -35,6 +41,7 @@ impl Parser {
 
   fn parse_binary_expression(&mut self, precedence: u8) -> Option<SyntaxTreeExpression> {
     let mut left = self.parse_primary_expression()?;
+    
     while let Some(operator) = self.parse_binary_operator() {
       self.consume();
       let operator_precedence = operator.precedence();

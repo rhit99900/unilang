@@ -132,7 +132,7 @@ impl <'a> Lexer<'a> {
     let c = self.consume().unwrap(); 
     // Debug Logs     
     println!("Consuming Punctuation: {:?}", c);
-    
+
     match c {
       '+' => TokenType::Plus,
       '-' => TokenType::Minus,
@@ -140,7 +140,7 @@ impl <'a> Lexer<'a> {
       '/' => TokenType::ForwardSlash,
       '(' => TokenType::LeftParenthesis,
       ')' => TokenType::RightParenthesis,
-      '\\' => TokenType::BackSlash,
+      // '\\' => TokenType::BackSlash,
       _ => TokenType::BadChar
     }
   }
