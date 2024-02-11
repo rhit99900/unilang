@@ -14,8 +14,13 @@ pub enum TokenType {
   RightParenthesis,  
   BadChar,
   WhiteSpace,
-  Eof
+  Eof,
   // Add more token types to assess in the parser
+  // Keywords
+  Identifier,
+  Equal,
+  Let,
+
 }
 
 impl Display for TokenType {
@@ -31,7 +36,10 @@ impl Display for TokenType {
       TokenType::RightParenthesis => write!(f, ")"),
       TokenType::BadChar => write!(f, "Bad"),
       TokenType::WhiteSpace => write!(f, "Whitespace"),
-      TokenType::Eof => write!(f, "EOF")
+      TokenType::Eof => write!(f, "EOF"),
+      TokenType::Identifier => write!(f, "Identifier"),
+      TokenType::Equal => write!(f, "="),
+      TokenType::Let => write!(f, "Let")
     }
   }
 }
@@ -106,6 +114,13 @@ impl <'a> Lexer<'a> {
         self.consume();
         kind = TokenType::WhiteSpace
       }
+      else if Self::is_identifier_start(&c) {
+        let identifier = self.consume_identifier();
+        kind = match identifier.as_str() {
+          "let" => TokenType::Let,
+          _ => TokenType::Identifier
+        }
+      }
       else {
         kind = self.consume_punctuation();
       }
@@ -124,6 +139,10 @@ impl <'a> Lexer<'a> {
     return c.is_digit(10)
   }
 
+  fn is_identifier_start(c: &char) -> bool {
+    return c.is_alphabetic();
+  }
+
   fn is_whitespace(c: &char) -> bool {
     return c.is_whitespace()
   }
@@ -132,7 +151,7 @@ impl <'a> Lexer<'a> {
     let c = self.consume().unwrap(); 
     // Debug Logs     
     // println!("Consuming Punctuation: {:?}", c);
-    
+
     return match c {
       '+' => TokenType::Plus,
       '-' => TokenType::Minus,
@@ -143,6 +162,20 @@ impl <'a> Lexer<'a> {
       // '\\' => TokenType::BackSlash,
       _ => TokenType::BadChar
     };
+  }
+
+  fn consume_identifier(&mut self) -> String {
+    let mut identifier = String::new();
+    while let Some(c) = self.current() {
+      if Self::is_identifier_start(&c) {
+        self.consume().unwrap();
+        identifier.push(c)
+      }
+      else {
+        break;
+      }
+    }
+    return identifier;
   }
 
   fn current(&self) -> Option<char> {
