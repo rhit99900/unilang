@@ -107,7 +107,7 @@ impl <'a> Lexer<'a> {
         kind = TokenType::WhiteSpace
       }
       else {
-        self.consume_punctuation();
+        kind = self.consume_punctuation();
       }
 
       let end = self.current_position;
@@ -131,9 +131,9 @@ impl <'a> Lexer<'a> {
   fn consume_punctuation(&mut self) -> TokenType {
     let c = self.consume().unwrap(); 
     // Debug Logs     
-    println!("Consuming Punctuation: {:?}", c);
-
-    match c {
+    // println!("Consuming Punctuation: {:?}", c);
+    
+    return match c {
       '+' => TokenType::Plus,
       '-' => TokenType::Minus,
       '*' => TokenType::Asterisk,
@@ -142,7 +142,7 @@ impl <'a> Lexer<'a> {
       ')' => TokenType::RightParenthesis,
       // '\\' => TokenType::BackSlash,
       _ => TokenType::BadChar
-    }
+    };
   }
 
   fn current(&self) -> Option<char> {
