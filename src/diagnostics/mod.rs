@@ -1,3 +1,4 @@
+pub mod printer;
 use std::{cell::RefCell, rc::Rc};
 
 use crate::syntax::lexer::{TextSpan, Token, TokenType};
