@@ -6,4 +6,4 @@
 - Parse the tokens generated through a Syntax Tree mapping and a Parser to identify the character and their types.
 
 ## TODO
-- Character Comparison to get punctuation symbols isn't working as expected. Need to be fixed.
+- Fixes to Syntax Tree Mapping 
