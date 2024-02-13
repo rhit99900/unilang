@@ -8,7 +8,7 @@ pub enum BinaryOperatorKind {
   Divide
 }
 pub struct BinaryOperator {
-  kind: BinaryOperatorKind,
+  pub kind: BinaryOperatorKind,
   token: Token
 }
 
@@ -27,7 +27,7 @@ impl BinaryOperator {
   }
 }
 pub struct BinaryExpression {
-  left: Box<SyntaxTreeExpression>,
-  operator: BinaryOperator,
-  right: Box<SyntaxTreeExpression>  
+  pub left: Box<SyntaxTreeExpression>,
+  pub operator: BinaryOperator,
+  pub right: Box<SyntaxTreeExpression>  
 }
