@@ -16,8 +16,8 @@ use super::{
 
 const INDENT_LEVEL:usize = 2;
 pub struct SyntaxTreePrinter {
-  indent: usize,
-  result: String
+  pub indent: usize,
+  pub(crate) result: String
 }
 
 impl SyntaxTreePrinter {
