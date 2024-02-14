@@ -160,12 +160,12 @@ impl Parser {
     return self.peek(0);
   }
 
-  fn consume(&mut self) -> &Token {
+  fn consume(&self) -> &Token {
     self.current.increment();
     return self.peek(-1);
   }
 
-  fn consume_and_check(&mut self, kind: TokenType) -> &Token {
+  fn consume_and_check(&self, kind: TokenType) -> &Token {
     let token = self.consume();
     if token.kind != kind {
       self.diagnostics_glossary.borrow_mut().report_unexpected_token(&kind, token);
