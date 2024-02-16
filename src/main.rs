@@ -17,8 +17,9 @@ mod symbols;
 
 fn main() -> Result<(), ()> {
 	let input = "
-		let a =10+30
+		let a = 10+30
 		let b = 20
+		let e = 1 
 		let d = 10 + e
 		let c = (a + b) * d
 	";

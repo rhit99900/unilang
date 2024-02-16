@@ -34,6 +34,7 @@ impl Display for TokenType {
       TokenType::BackSlash => write!(f, "\\"),
       TokenType::LeftParenthesis => write!(f, "("),
       TokenType::RightParenthesis => write!(f, ")"),
+      TokenType::BackSlash => write!(f, "\\"),
       TokenType::BadChar => write!(f, "Bad"),
       TokenType::WhiteSpace => write!(f, "Whitespace"),
       TokenType::Eof => write!(f, "EOF"),
@@ -159,7 +160,8 @@ impl <'a> Lexer<'a> {
       '/' => TokenType::ForwardSlash,
       '(' => TokenType::LeftParenthesis,
       ')' => TokenType::RightParenthesis,
-      // '\\' => TokenType::BackSlash,
+      '=' => TokenType::Equal,
+      '\\' => TokenType::BackSlash,
       _ => TokenType::BadChar
     };
   }
