@@ -27,12 +27,12 @@ impl <'a> DiagnosticPrinter<'a> {
 
     let indent = cmp::min(PREFIX_LENGTH, column);
     let (pointers, pointer_line) = Self::format_pointer(diagnostic, indent);
-    let error_message = Self::format_error_message(diagnostic, indent);
+    let error_message = Self::format_error_message(diagnostic, indent, column, line_index);
     return format!("{}{}{}{}{}\n{}\n{}\n{}", prefix, Fg(Red), span, Fg(Reset), suffix, pointers, pointer_line, error_message);
   }
 
-  fn format_error_message(diagnostic: &Diagnostic, indent: usize) -> String {
-    return format!("{:indent$}+-- {}", "", diagnostic.message, indent = indent);
+  fn format_error_message(diagnostic: &Diagnostic, indent: usize, column: usize, line_index: usize) -> String {
+    return format!("{:indent$}+-- {} (Ln:{}, Col:{})", "", diagnostic.message, line_index + 1, column + 1, indent = indent);
   }
 
   fn format_pointer(diagnostic: &Diagnostic, indent: usize) -> (String, String) {

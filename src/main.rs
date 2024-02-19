@@ -16,10 +16,9 @@ mod text;
 mod symbols;
 
 fn main() -> Result<(), ()> {
-	let input = "
+	let input = "\
 		let a = 10+30
-		let b = 20
-		let e = 1 
+		let b = 20		
 		let d = 10 + e
 		let c = (a + b) * d
 	";
@@ -32,9 +31,9 @@ fn main() -> Result<(), ()> {
 
 	// Printing Tokens tokenised by Lexer;
 	// Debug Logs
-	for token in &tokens {
-			println!("{:?}", token);
-	}
+	// for token in &tokens {
+	// 		println!("{:?}", token);
+	// }
 
 	// Diagnostics
 	let _diagnostic: DiagnosticGlossaryCell = Rc::new(RefCell::new(diagnostics::DiagnosticGlossary::new()));	
