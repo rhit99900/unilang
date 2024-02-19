@@ -9,7 +9,7 @@ pub enum BinaryOperatorKind {
 }
 pub struct BinaryOperator {
   pub kind: BinaryOperatorKind,
-  token: Token
+  pub token: Token
 }
 
 impl BinaryOperator {

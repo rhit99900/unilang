@@ -77,22 +77,20 @@ impl SyntaxTreeVisitor for SyntaxTreePrinter {
   }
 
   fn visit_number(&mut self, number: &NumberExpression) {
-    self.print_with_indent(&format!("Number: {}", number.number));
+    self.result.push_str(&format!("{}{}", Self::NUMBER_COLOR.fg_str(), number.number,));
   }
 
   fn visit_binary_expression(&mut self, binary_expression: &BinaryExpression) {
-    self.print_with_indent("Binary Expression:");
-    self.indent += INDENT_LEVEL;
-    self.print_with_indent(&format!("Operator: {:?}", binary_expression.operator.kind));
     self.visit_expression(&binary_expression.left);
+    self.add_whitespace();
+    self.result.push_str(&format!("{}{}", Self::TEXT_COLOR.fg_str(), binary_expression.operator.token.span.literal));
+    self.add_whitespace();
     self.visit_expression(&binary_expression.right);
-    self.indent -= INDENT_LEVEL;
   }
 
   fn visit_parenthesised_expression(&mut self, parenthesised_expression: &ParenthesisExpression) {
-    self.print_with_indent("Parenthesised Expression:");
-    self.indent += INDENT_LEVEL;
-    SyntaxTreeVisitor::visit_expression(self, &parenthesised_expression.expression);
-    self.indent -= INDENT_LEVEL;
+    self.result.push_str(&format!("{}{}", Self::TEXT_COLOR.fg_str(), "(", ));
+    self.visit_expression(&parenthesised_expression.expression);
+    self.result.push_str(&format!("{}{}", Self::TEXT_COLOR.fg_str(), ")", ));
   }
 }

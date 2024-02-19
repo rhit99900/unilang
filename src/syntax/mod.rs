@@ -17,6 +17,7 @@ pub mod statement;
 pub mod expression;
 pub mod types;
 pub mod printer;
+pub mod test;
 
 // Abstract Syntax Tree Module
 pub struct SyntaxTree {
