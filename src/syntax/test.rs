@@ -45,10 +45,13 @@ mod test {
     }  
 
     pub fn verify(&self) {
+
+      assert_eq!(self.expected.len(), self.actual.len(), "Expected {} nodes, but got {}. Actual nodes: {:?}", self.expected.len(), self.actual.len(), self.actual);
+
       for(index, (expected, actual)) in self.expected.iter().zip(
         self.actual.iter()
       ).enumerate() {
-        assert_eq!(expected, actual, "Expected {:?} at index {}, but got {:?} instead", expected, index, actual);
+        assert_eq!(expected, actual, "Expected {:?} at index {}, but got {:?} instead.", expected, index, actual);
       }
     }
   }
@@ -131,6 +134,24 @@ mod test {
       SyntaxTreeTestNode::Variable("b".to_string())
     ];
 
-    assert_tree(input, expected)
+    assert_tree(input, expected);
+  }
+
+  #[test]
+  pub fn should_parse_binary_exprssion_with_variable_and_number() {
+    let input = "let a = (1 + 2) * b + 3";
+    let expected = vec![
+      SyntaxTreeTestNode::LetStatement,
+      SyntaxTreeTestNode::Binary,
+      SyntaxTreeTestNode::Binary,
+      SyntaxTreeTestNode::Parenthesised,
+      SyntaxTreeTestNode::Binary,
+      SyntaxTreeTestNode::Number(1),
+      SyntaxTreeTestNode::Number(2),
+      SyntaxTreeTestNode::Variable("b".to_string()),      
+      SyntaxTreeTestNode::Number(3)
+    ];
+
+    assert_tree(input, expected);
   }
 }

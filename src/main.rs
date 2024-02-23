@@ -18,7 +18,8 @@ fn main() {
 	";	
 	
 	let compilation_unit = CompilationUnit::compile(input);
-	compilation_unit.run();
+	compilation_unit.prerun();
+	// compilation_unit.run();
 
 	// let mut stdout = io::stdout().into_raw_mode().unwrap();
 	// let stdin = io::stdin();

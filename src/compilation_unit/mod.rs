@@ -84,6 +84,13 @@ impl CompilationUnit {
     }
   }
 
+  pub fn prerun(&self) {
+    if self.diagnostic_glossary.borrow().diagnostics.len() > 0 {
+      return;
+    }
+    self.run();
+  }
+
   pub fn run(&self) {
     let mut evaluate = Evaluator::new();
 	  self.st.visit(&mut evaluate);

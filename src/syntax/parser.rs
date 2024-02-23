@@ -91,6 +91,7 @@ impl Parser {
     while let Some(operator) = self.parse_binary_operator() {
       self.consume();
       let operator_precedence = operator.precedence();
+      // TODO: Less precendence operators after a higher precedence operator breaks the code.
       if operator_precedence < precedence {
         break;
       }

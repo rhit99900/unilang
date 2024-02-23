@@ -39,10 +39,14 @@ impl SyntaxTreeVisitor for SymbolChecker {
   }
 
   fn visit_number(&mut self, number: &NumberExpression) {
+    // TODO Remove Print
+    println!("{:?}", number);
     // TODO 
   }
 
   fn visit_error(&mut self, span: &TextSpan) {
+    // TODO Remove Print
+    println!("{:?}", span);
     // TODO
   }
 }

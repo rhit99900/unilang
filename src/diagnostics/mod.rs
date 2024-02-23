@@ -1,12 +1,16 @@
 pub mod printer;
+pub mod test;
 use std::{cell::RefCell, rc::Rc};
 
 use crate::syntax::lexer::{TextSpan, Token, TokenType};
 
+#[derive(Clone)]
 pub enum DiagnosticKind {
   Error,
   Warning
 }
+
+#[derive(Clone)]
 pub struct Diagnostic {
   pub message: String,
   pub span: TextSpan,
@@ -52,4 +56,3 @@ impl DiagnosticGlossary {
     self.report_error(format!("Undeclared variable '{}'", token.span.literal), token.span.clone());
   }
 }
-
