@@ -89,12 +89,13 @@ impl Parser {
   fn parse_binary_expression(&mut self, precedence: u8) -> SyntaxTreeExpression {
     let mut left = self.parse_primary_expression();    
     while let Some(operator) = self.parse_binary_operator() {
-      self.consume();
-      let operator_precedence = operator.precedence();
-      // TODO: Less precendence operators after a higher precedence operator breaks the code.
+      let operator_precedence = operator.precedence();      
       if operator_precedence < precedence {
         break;
       }
+      // Consume token later to ensure the current token that's being parsed doesn't move up incase of a lower precedence binary operator being parsed
+      // in the right. Example of error caused with statement like "let a = (1 + 2) * b + 3"
+      self.consume();
       let right = self.parse_binary_expression(operator_precedence);
       left = SyntaxTreeExpression::binary(operator, left, right);
     }
