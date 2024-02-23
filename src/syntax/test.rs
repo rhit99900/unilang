@@ -5,11 +5,7 @@ mod test {
     compilation_unit::CompilationUnit, 
     syntax::{
       lexer::TextSpan, types::{
-        _binary::BinaryExpression,
-        _let::LetStatement,
-        _number::NumberExpression,
-        _parenthesis::ParenthesisExpression,
-        _variable::VariableExpression
+        _binary::BinaryExpression, _let::LetStatement, _number::NumberExpression, _parenthesis::ParenthesisExpression, _unary::UnaryExpression, _variable::VariableExpression
       }, 
       visitor::SyntaxTreeVisitor,
       SyntaxTree
@@ -21,6 +17,7 @@ mod test {
   enum SyntaxTreeTestNode {
     Number(i64),
     Binary,
+    Unary,
     Parenthesised,
     LetStatement,
     Variable(String)
@@ -34,6 +31,7 @@ mod test {
   impl SyntatTreeVerifier {
     pub fn new(input: &str, expected: Vec<SyntaxTreeTestNode>) -> Self {
       let compilation_unit = CompilationUnit::compile(input);
+      assert_eq!(compilation_unit.diagnostic_glossary.borrow().diagnostics.len(), 0, "Expected no diagnostics, got {:?} instead", compilation_unit.diagnostic_glossary.borrow().diagnostics);
       let mut verifier = SyntatTreeVerifier { expected, actual: Vec::new() };
       let flatten = verifier.flatten_syntax_tree(&compilation_unit.st);
       return verifier;
@@ -86,6 +84,11 @@ mod test {
       self.visit_expression(&binary_expression.left);
       self.visit_expression(&binary_expression.right);
     }  
+
+    fn visit_unary_expression(&mut self, unary_expression: &UnaryExpression) {
+      self.actual.push(SyntaxTreeTestNode::Unary);
+      self.visit_expression(&unary_expression.operand);
+    }
   }
 
   fn assert_tree(input: &str, expected: Vec<SyntaxTreeTestNode>) {
@@ -154,4 +157,69 @@ mod test {
 
     assert_tree(input, expected);
   }
+
+  #[test]
+  pub fn should_parse_bitwise_and() {
+    let input = "let a = 1 & 2";
+    let expected = vec![
+      SyntaxTreeTestNode::LetStatement,
+      SyntaxTreeTestNode::Binary,
+      SyntaxTreeTestNode::Number(1),
+      SyntaxTreeTestNode::Number(2)
+    ];
+
+    assert_tree(input, expected);
+  }  
+
+  #[test]
+  pub fn should_parse_bitwise_or() {
+    let input = "let a = 1 | 2";
+    let expected = vec![
+      SyntaxTreeTestNode::LetStatement,
+      SyntaxTreeTestNode::Binary,
+      SyntaxTreeTestNode::Number(1),
+      SyntaxTreeTestNode::Number(2)
+    ];
+
+    assert_tree(input, expected);
+  }
+
+  #[test]
+  pub fn should_parse_bitwise_xor() {
+    let input = "let a = 1 ^ 2";
+    let expected = vec![
+      SyntaxTreeTestNode::LetStatement,
+      SyntaxTreeTestNode::Binary,
+      SyntaxTreeTestNode::Number(1),
+      SyntaxTreeTestNode::Number(2)
+    ];
+
+    assert_tree(input, expected);
+  }
+
+  #[test]
+  pub fn should_parse_negation() {
+    let input = "let a = -1";
+    let expected = vec![
+      SyntaxTreeTestNode::LetStatement,
+      SyntaxTreeTestNode::Unary,
+      SyntaxTreeTestNode::Number(1)      
+    ];
+
+    assert_tree(input, expected);
+  }
+
+  #[test]
+  pub fn should_parse_power() {
+    let input = "let a = 1 ** 2";
+    let expected = vec![
+      SyntaxTreeTestNode::LetStatement,
+      SyntaxTreeTestNode::Binary,
+      SyntaxTreeTestNode::Number(1),
+      SyntaxTreeTestNode::Number(2)      
+    ];
+
+    assert_tree(input, expected);
+  }
+
 }

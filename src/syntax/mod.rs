@@ -1,11 +1,6 @@
 use self::{
-  expression::SyntaxTreeExpression,  
   printer::SyntaxTreePrinter, 
-  statement::SyntaxTreeStatement, 
-  types::{
-    _binary::BinaryOperator, 
-    _number::NumberExpression
-  }, 
+  statement::SyntaxTreeStatement,  
   visitor::SyntaxTreeVisitor
 };
 

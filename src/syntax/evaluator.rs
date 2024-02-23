@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use super::{lexer::TextSpan, types::{_binary::{BinaryExpression, BinaryOperatorKind}, _let::LetStatement, _number::NumberExpression, _variable::VariableExpression}, visitor::SyntaxTreeVisitor};
+use super::{lexer::TextSpan, types::{_binary::{BinaryExpression, BinaryOperatorKind}, _let::LetStatement, _number::NumberExpression, _unary::{UnaryExpression, UnaryOperator, UnaryOperatorKind}, _variable::VariableExpression}, visitor::SyntaxTreeVisitor};
 
 
 pub struct Evaluator {
@@ -44,7 +44,20 @@ impl SyntaxTreeVisitor for Evaluator {
       BinaryOperatorKind::Plus => left + right,
       BinaryOperatorKind::Minus => left - right,
       BinaryOperatorKind::Multiply => left * right,
-      BinaryOperatorKind::Divide => left / right
+      BinaryOperatorKind::Divide => left / right,
+      BinaryOperatorKind::BitwiseAnd => left & right,
+      BinaryOperatorKind::BitwiseOr => left | right,
+      BinaryOperatorKind::BitwiseXor => left ^ right,
+      BinaryOperatorKind::Power => left.pow(right as u32)
     });
+  }
+
+  fn visit_unary_expression(&mut self, unary_expression: &UnaryExpression) {
+    self.visit_expression(&unary_expression.operand);
+    let operand = self.last_value.unwrap();
+    self.last_value = Some(match unary_expression.operator.kind {
+      UnaryOperatorKind::Minus => -operand,
+      UnaryOperatorKind::BitwiseNot => !operand
+    })
   }
 }

@@ -5,21 +5,28 @@ use std::fmt::{Display, Formatter, write};
 #[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
   Number(i64),
+  // Operators
   Plus,
   Minus,
   Asterisk,
   ForwardSlash,
-  BackSlash,
+  Equal,
+  Ampersand,
+  Pipe,
+  Caret,
+  DoubleAsterisk,
+  Tilde,
+  // Other
   LeftParenthesis,
   RightParenthesis,  
   BadChar,
+  BackSlash,
   WhiteSpace,
-  Eof,
-  // Add more token types to assess in the parser
-  // Keywords
   Identifier,
-  Equal,
+  Eof,
+  // Keywords
   Let,
+  // TODO: Add more token types to assess in the parser
 
 }
 
@@ -40,7 +47,12 @@ impl Display for TokenType {
       TokenType::Eof => write!(f, "EOF"),
       TokenType::Identifier => write!(f, "Identifier"),
       TokenType::Equal => write!(f, "="),
-      TokenType::Let => write!(f, "Let")
+      TokenType::Let => write!(f, "Let"),
+      TokenType::Ampersand => write!(f, "&"),
+      TokenType::Pipe => write!(f, "|"),
+      TokenType::Caret => write!(f, "^"),
+      TokenType::DoubleAsterisk => write!(f, "**"),
+      TokenType::Tilde => write!(f, "~")
     }
   }
 }
@@ -150,18 +162,35 @@ impl <'a> Lexer<'a> {
 
   fn consume_punctuation(&mut self) -> TokenType {
     let c = self.consume().unwrap(); 
+    
     // Debug Logs     
     // println!("Consuming Punctuation: {:?}", c);
 
     return match c {
       '+' => TokenType::Plus,
       '-' => TokenType::Minus,
-      '*' => TokenType::Asterisk,
+      '*' => {
+        if let Some(next) = self.current() {
+          if next == '*' {
+            self.consume();
+            TokenType::DoubleAsterisk
+          }
+          else {
+            TokenType::Asterisk
+          }
+        } else {
+          TokenType::Asterisk
+        }
+      },
       '/' => TokenType::ForwardSlash,
       '(' => TokenType::LeftParenthesis,
       ')' => TokenType::RightParenthesis,
       '=' => TokenType::Equal,
       '\\' => TokenType::BackSlash,
+      '&' => TokenType::Ampersand,
+      '|' => TokenType::Pipe,
+      '^' => TokenType::Caret,
+      '~' => TokenType::Tilde,
       _ => TokenType::BadChar
     };
   }

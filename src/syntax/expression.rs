@@ -1,15 +1,24 @@
 use super::{
-  lexer::{TextSpan, Token}, 
+  lexer::{
+    TextSpan,
+    Token
+  }, 
   types::{
-    _binary::{BinaryExpression, BinaryOperator}, 
+    _binary::{
+      BinaryExpression,
+      BinaryOperator
+    }, 
     _number::NumberExpression, 
-    _parenthesis::ParenthesisExpression, _variable::VariableExpression
+    _parenthesis::ParenthesisExpression,
+    _unary::UnaryExpression,
+    _variable::VariableExpression
   }
 };
 
 pub enum SyntaxTreeExpressionKind {
   Number(NumberExpression),
   Binary(BinaryExpression),
+  Unary(UnaryExpression),
   Parenthesised(ParenthesisExpression),
   Variable(VariableExpression),
   Error(TextSpan)

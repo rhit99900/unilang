@@ -5,7 +5,11 @@ pub enum BinaryOperatorKind {
   Plus,
   Minus,
   Multiply,
-  Divide
+  Divide,
+  Power,
+  BitwiseAnd,
+  BitwiseOr,
+  BitwiseXor
 }
 pub struct BinaryOperator {
   pub kind: BinaryOperatorKind,
@@ -19,10 +23,14 @@ impl BinaryOperator {
 
   pub fn precedence(&self) -> u8 {
     return match self.kind {
-      BinaryOperatorKind::Plus => 1,
-      BinaryOperatorKind::Minus => 1,
-      BinaryOperatorKind::Multiply => 2,
-      BinaryOperatorKind::Divide => 2 
+      BinaryOperatorKind::Power => 20,      
+      BinaryOperatorKind::Multiply => 19,
+      BinaryOperatorKind::Divide => 19 ,      
+      BinaryOperatorKind::Plus => 18,
+      BinaryOperatorKind::Minus => 18,
+      BinaryOperatorKind::BitwiseAnd => 17,
+      BinaryOperatorKind::BitwiseXor => 16,
+      BinaryOperatorKind::BitwiseOr => 15
     };
   }
 }

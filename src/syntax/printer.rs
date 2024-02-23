@@ -1,5 +1,7 @@
 use termion::color::{self, Fg, Reset};
 
+use crate::syntax::types::_unary::UnaryExpression;
+
 use super::{
   expression::SyntaxTreeExpression, 
   lexer::TextSpan, 
@@ -69,13 +71,6 @@ impl SyntaxTreeVisitor for SyntaxTreePrinter {
     self.result.push_str(&format!("{}{}", Self::TEXT_COLOR.fg_str(), span.literal,));
   }
 
-  fn visit_expression(&mut self, expression: &SyntaxTreeExpression) {
-    self.print_with_indent("Expression:");
-    self.indent += INDENT_LEVEL;
-    SyntaxTreeVisitor::do_visit_expression(self, expression);
-    self.indent -= INDENT_LEVEL;
-  }
-
   fn visit_number(&mut self, number: &NumberExpression) {
     self.result.push_str(&format!("{}{}", Self::NUMBER_COLOR.fg_str(), number.number,));
   }
@@ -83,10 +78,15 @@ impl SyntaxTreeVisitor for SyntaxTreePrinter {
   fn visit_binary_expression(&mut self, binary_expression: &BinaryExpression) {
     self.visit_expression(&binary_expression.left);
     self.add_whitespace();
-    self.result.push_str(&format!("{}{}", Self::TEXT_COLOR.fg_str(), binary_expression.operator.token.span.literal));
+    self.result.push_str(&format!("{}{}", Self::TEXT_COLOR.fg_str(), binary_expression.operator.token.span.literal, ));
     self.add_whitespace();
     self.visit_expression(&binary_expression.right);
   }
+
+  fn visit_unary_expression(&mut self, unary_expression: &UnaryExpression) {
+    self.result.push_str(&format!("{}{}", Self::TEXT_COLOR.fg_str(), unary_expression.operator.token.span.literal, ));
+    self.visit_expression(&unary_expression.operand);
+  }  
 
   fn visit_parenthesised_expression(&mut self, parenthesised_expression: &ParenthesisExpression) {
     self.result.push_str(&format!("{}{}", Self::TEXT_COLOR.fg_str(), "(", ));

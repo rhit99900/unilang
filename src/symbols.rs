@@ -4,8 +4,12 @@ use crate::{
   diagnostics::DiagnosticGlossaryCell, 
   syntax::{
     lexer::TextSpan, types::{
-      _let::LetStatement, _number::NumberExpression, _variable::VariableExpression
-    }, visitor::SyntaxTreeVisitor
+      _let::LetStatement,
+      _number::NumberExpression,
+      _unary::UnaryExpression,
+      _variable::VariableExpression
+    }, 
+    visitor::SyntaxTreeVisitor
   }
 };
 
@@ -48,5 +52,9 @@ impl SyntaxTreeVisitor for SymbolChecker {
     // TODO Remove Print
     println!("{:?}", span);
     // TODO
+  }
+
+  fn visit_unary_expression(&mut self, unary_expression: &UnaryExpression) {
+    self.visit_expression(&unary_expression.operand);
   }
 }

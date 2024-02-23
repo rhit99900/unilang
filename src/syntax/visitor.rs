@@ -1,13 +1,12 @@
-use termion::color::Reset;
 use super::expression::SyntaxTreeExpressionKind;
 use super::expression::SyntaxTreeExpression;
 use super::lexer::TextSpan;
-use super::printer::SyntaxTreePrinter;
 use super::statement::{SyntaxTreeStatement, SyntaxTreeStatementKind};
 use super::types::_binary::BinaryExpression;
 use super::types::_number::NumberExpression;
 use super::types::_let::LetStatement;
 use super::types::_parenthesis::ParenthesisExpression;
+use super::types::_unary::UnaryExpression;
 use super::types::_variable::VariableExpression;
 
 pub trait SyntaxTreeVisitor {
@@ -35,6 +34,9 @@ pub trait SyntaxTreeVisitor {
       SyntaxTreeExpressionKind::Binary(expr) => {
         self.visit_binary_expression(expr);
       }
+      SyntaxTreeExpressionKind::Unary(expr) => {
+        self.visit_unary_expression(expr);
+      }
       SyntaxTreeExpressionKind::Parenthesised(expr) => {
         self.visit_parenthesised_expression(expr);
       }
@@ -61,6 +63,8 @@ pub trait SyntaxTreeVisitor {
     self.visit_expression(&binary_expression.left);
     self.visit_expression(&binary_expression.right);
   }
+
+  fn visit_unary_expression(&mut self, unary_expression: &UnaryExpression);
 
   fn visit_parenthesised_expression(&mut self, parenthesised_expression: &ParenthesisExpression) {
     self.visit_expression(&parenthesised_expression.expression);
