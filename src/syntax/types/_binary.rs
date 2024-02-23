@@ -29,5 +29,5 @@ impl BinaryOperator {
 pub struct BinaryExpression {
   pub left: Box<SyntaxTreeExpression>,
   pub operator: BinaryOperator,
-  pub right: Box<SyntaxTreeExpression>  
+  pub right: Box<SyntaxTreeExpression>
 }
