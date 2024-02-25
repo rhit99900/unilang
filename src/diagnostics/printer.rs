@@ -1,5 +1,4 @@
 use std::cmp;
-use std::fmt::format;
 use termion::color::{Fg, Red, Reset};
 use crate::diagnostics::Diagnostic;
 use crate::text::SourceText;

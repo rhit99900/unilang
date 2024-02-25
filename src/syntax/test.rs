@@ -33,13 +33,13 @@ mod test {
       let compilation_unit = CompilationUnit::compile(input);
       assert_eq!(compilation_unit.diagnostic_glossary.borrow().diagnostics.len(), 0, "Expected no diagnostics, got {:?} instead", compilation_unit.diagnostic_glossary.borrow().diagnostics);
       let mut verifier = SyntatTreeVerifier { expected, actual: Vec::new() };
-      let flatten = verifier.flatten_syntax_tree(&compilation_unit.st);
+      verifier.flatten_syntax_tree(&compilation_unit.st);
       return verifier;
     }
 
     fn flatten_syntax_tree(&mut self, syntax_tree: &SyntaxTree) {
       self.actual.clear();
-      return syntax_tree.visit(&mut *self);
+      syntax_tree.visit(&mut *self);
     }  
 
     pub fn verify(&self) {
