@@ -5,7 +5,17 @@ use crate::diagnostics::DiagnosticGlossaryCell;
 use super::{
   expression::SyntaxTreeExpression, 
   lexer::{Token, TokenType}, 
-  statement::SyntaxTreeStatement, types::_binary::{BinaryOperator, BinaryOperatorKind}
+  statement::SyntaxTreeStatement,
+  types::{
+    _binary::{
+      BinaryOperator,
+      BinaryOperatorKind
+    }, 
+    _unary::{
+      UnaryOperator,
+      UnaryOperatorKind
+    }
+  }
 };
 
 pub struct Counter {
@@ -22,7 +32,7 @@ impl Counter {
     self.value.set(current_value + 1);    
   }
 
-  pub fn get_value(&self) -> usize {
+  pub fn get_value(&self) -> usize { 
     return self.value.get();
   }
 }
@@ -62,7 +72,7 @@ impl Parser {
     match self.current().kind {
        TokenType::Let => {
         self.parse_let_statement()
-       }
+       }       
        _ => {
         self.parse_expression_statement()
        }
@@ -122,6 +132,31 @@ impl Parser {
       }
     };
     return kind.map(|kind| BinaryOperator::new(kind, token.clone()));
+  }
+
+  fn parse_unary_operator(&mut self) -> Option<UnaryOperator> {
+    let token = self.current();
+    let kind = match token.kind {
+      TokenType::Minus => {
+        Some(UnaryOperatorKind::Minus)
+      },
+      TokenType::Tilde => {
+        Some(UnaryOperatorKind::BitwiseNot)
+      },
+      _ => {
+        None
+      }      
+    };
+    return kind.map(|kind| UnaryOperator::new(kind, token.clone()));
+  }
+
+  fn parse_unary_expression(&mut self) -> SyntaxTreeExpression {
+    if let Some(operator) = self.parse_unary_operator() {
+      self.consume();
+      let operand = self.parse_unary_expression();
+      return SyntaxTreeExpression::unary(operator, operand);
+    }
+    return self.parse_primary_expression();
   }
 
   fn parse_primary_expression(&mut self) -> SyntaxTreeExpression {

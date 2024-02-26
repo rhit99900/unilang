@@ -2,8 +2,7 @@ use termion::color::{self, Fg, Reset};
 
 use crate::syntax::types::_unary::UnaryExpression;
 
-use super::{
-  expression::SyntaxTreeExpression, 
+use super::{  
   lexer::TextSpan, 
   statement::SyntaxTreeStatement, 
   types::{
@@ -16,7 +15,6 @@ use super::{
   visitor::SyntaxTreeVisitor
 };
 
-const INDENT_LEVEL:usize = 2;
 pub struct SyntaxTreePrinter {
   pub indent: usize,
   pub(crate) result: String

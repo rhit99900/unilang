@@ -72,6 +72,7 @@ mod test {
 
     fn visit_error(&mut self, span: &TextSpan) {
       // Do Nothing 
+      todo!()
     }
 
     fn visit_parenthesised_expression(&mut self, parenthesised_expression: &ParenthesisExpression) {

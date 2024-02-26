@@ -10,7 +10,10 @@ use super::{
     }, 
     _number::NumberExpression, 
     _parenthesis::ParenthesisExpression,
-    _unary::UnaryExpression,
+    _unary::{
+      UnaryExpression,
+      UnaryOperator
+    },
     _variable::VariableExpression
   }
 };
@@ -51,5 +54,9 @@ impl SyntaxTreeExpression {
 
   pub fn error(span: TextSpan) -> Self {
     return SyntaxTreeExpression::new(SyntaxTreeExpressionKind::Error(span));
+  }
+
+  pub fn unary(operator: UnaryOperator, operand: SyntaxTreeExpression) -> Self {
+    return SyntaxTreeExpression::new(SyntaxTreeExpressionKind::Unary(UnaryExpression { operator, operand: Box::new(operand) }));
   }
 }

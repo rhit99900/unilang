@@ -36,9 +36,9 @@ impl CompilationUnit {
 
     // Printing Tokens tokenised by Lexer;
     // Debug Logs
-    // for token in &tokens {
-    // 		println!("{:?}", token);
-    // }
+    for token in &tokens {
+    		println!("{:?}", token);
+    }
 
     // Diagnostics
     let _diagnostic: DiagnosticGlossaryCell = Rc::new(RefCell::new(diagnostics::DiagnosticGlossary::new()));	

@@ -10,11 +10,16 @@ mod symbols;
 mod compilation_unit;
 
 fn main() {
+	// let input = "\
+	// 	let a = 10+30
+	// 	let b = 20
+	// 	let e = 100
+	// 	let d = 10 + e
+	// 	let c = (a + b) * d
+	// ";
+
 	let input = "\
-		let a = 10+30
-		let b = 20		
-		let d = 10 + e
-		let c = (a + b) * d
+		let a = -10 + 2		
 	";	
 	
 	let compilation_unit = CompilationUnit::compile(input);
